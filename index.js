@@ -308,7 +308,6 @@
 </div>
 
 <script>
-// ⚠️ بدّل هاد الرابط بالرابط ديال السيرفر (Render/Koyeb/Railway)
 const BACKEND_URL = 'https://your-backend.onrender.com';
 
 const form = document.getElementById('pairForm');
@@ -357,7 +356,6 @@ form.addEventListener('submit', async (e) => {
   submitBtn.textContent = 'كنولدو الكود…';
 
   try {
-    // نستعملو GET /pair?phone= رقم
     const res = await fetch(BACKEND_URL + '/pair?phone=' + number);
     const data = await res.json();
 
