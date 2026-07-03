@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ربط البوت — WA Pair</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0A1310;
@@ -29,7 +30,7 @@
   body{
     background:radial-gradient(circle at 50% 18%,rgba(41,211,152,0.08),transparent 60%),var(--bg);
     color:var(--text);
-    font-family:'Inter',sans-serif;
+    font-family:'Cairo', 'Inter', sans-serif;
     min-height:100vh;
     padding:16px;
   }
@@ -67,7 +68,7 @@
     box-shadow:0 30px 60px -20px rgba(0,0,0,0.3);
   }
   h1{
-    font-family:'Space Grotesk',sans-serif;
+    font-family:'Space Grotesk', sans-serif;
     font-weight:700;
     font-size:22px;
     margin-bottom:8px;
@@ -91,6 +92,7 @@
     color:var(--text);
     font-size:16px;
     outline:none;
+    font-family:'JetBrains Mono', monospace;
   }
   input:focus{border-color:var(--accent);}
   .btn{
@@ -112,7 +114,8 @@
   .result{display:none;margin-top:20px;}
   .code-boxes{display:flex;justify-content:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
   .code-boxes span{
-    font-family:monospace;font-weight:700;font-size:20px;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;font-size:20px;
     background:var(--surface-2);border:1px solid var(--accent-dim);
     color:var(--accent);border-radius:8px;padding:8px 10px;min-width:30px;text-align:center;
   }
@@ -156,7 +159,7 @@
     background:var(--surface-2);
     border:1px solid var(--accent-dim);
     color:var(--accent);
-    font-family:monospace;
+    font-family:'JetBrains Mono', monospace;
     font-size:12px;
     display:flex;
     align-items:center;
@@ -189,7 +192,8 @@
   }
   .modal-box h2{color:var(--accent);margin-bottom:16px;font-size:20px;}
   .modal-box .big-code{
-    font-family:monospace;font-weight:700;font-size:36px;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;font-size:36px;
     color:var(--accent);letter-spacing:8px;margin:16px 0;
   }
   .modal-box .close-btn{
@@ -227,7 +231,7 @@
         <label>رقم الهاتف (بصيغة دولية)</label>
         <input type="text" id="number" placeholder="212772941308" inputmode="numeric" autocomplete="off">
       </div>
-      <button type="submit" class="btn" id="submitBtn">ولّد الكود</button>
+      <button type="submit" class="btn" id="submitBtn">اطلب الكود</button>
       <div class="error" id="errorBox"></div>
     </form>
     <div class="result" id="resultBox">
@@ -303,7 +307,7 @@ form.addEventListener('submit',async(e)=>{
     return;
   }
   submitBtn.disabled=true;
-  submitBtn.textContent='كنولدو الكود…';
+  submitBtn.textContent='جاري طلب الكود…';
   try{
     const res=await fetch('/pair?phone='+number);
     const data=await res.json();
@@ -329,7 +333,7 @@ form.addEventListener('submit',async(e)=>{
     errorBox.style.display='block';
   }finally{
     submitBtn.disabled=false;
-    submitBtn.textContent='ولّد الكود';
+    submitBtn.textContent='اطلب الكود';
   }
 });
 copyBtn.addEventListener('click',()=>{
