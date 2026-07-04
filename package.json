@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "baileys": "latest",
-    "cors": "^2.8.5"
+    "flibu-baileys-official": "latest",
+    "cors": "^2.8.5",
+    "jimp": "latest"
   }
 }
