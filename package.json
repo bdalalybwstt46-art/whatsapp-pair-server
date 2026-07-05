@@ -1,15 +1,15 @@
 {
-  "name": "whatsapp-pair-server",
+  "name": "abde-wa-pair",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "flibu-baileys-official": "latest",
     "cors": "^2.8.5",
-    "jimp": "latest"
+    "@flibu-official/baileys": "latest",
+    "pino": "^9.0.0"
   }
 }
