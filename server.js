@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ========== API URL ==========
-const API_URL = 'http://176.100.37.77:30069';
+const API_URL = 'http://92.118.206.4:30029';
 
 // ========== الصفحة الرئيسية (الواجهة) ==========
 app.get('/', (req, res) => {
