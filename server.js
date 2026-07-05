@@ -14,6 +14,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ========== API URL ==========
+const API_URL = 'http://176.100.37.77:30069';
+
 // ========== الصفحة الرئيسية (الواجهة) ==========
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -25,77 +28,47 @@ app.get('/pair', async (req, res) => {
   if (!phone) return res.json({ error: 'يرجى إدخال رقم الهاتف' });
 
   try {
-    const authFolder = path.join(__dirname, 'sessions', 'auth_' + phone);
-    if (!fs.existsSync(authFolder)) {
-      fs.mkdirSync(authFolder, { recursive: true });
-    }
-    
-    // 1. تحميل الجلسة المحفوظة (إذا وجدت)
-    const { state, saveCreds } = await useMultiFileAuthState(authFolder);
-
-    // 2. جلب أحدث إصدار متوافق من المكتبة تلقائياً
-    const { version, isLatest } = await fetchLatestBaileysVersion();
-    console.log(`✅ جاهز للاتصال... الإصدار: v${version.join('.')} (الأحدث: ${isLatest})`);
-
-    // 3. إنشاء اتصال الواتساب
-    const sock = makeWASocket({
-      version,
-      auth: state,
-      printQRInTerminal: false,
-      logger: pino({ level: 'silent' }),
-    });
-
-    // 4. حدث حفظ بيانات الجلسة
-    sock.ev.on('creds.update', saveCreds);
-
-    // 5. مراقبة حالة الاتصال
-    sock.ev.on('connection.update', (update) => {
-      const { connection, lastDisconnect } = update;
-      if (connection === 'open') {
-        console.log(`🎉 تم ربط البوت بنجاح للرقم: ${phone}`);
-      }
-      if (connection === 'close') {
-        const statusCode = lastDisconnect?.error?.output?.statusCode;
-        const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-        console.log(`⚠️ انقطع الاتصال للرقم ${phone}. السبب: ${statusCode || 'غير معروف'}`);
-        if (shouldReconnect) {
-          console.log('🔄 جارٍ إعادة الاتصال تلقائياً...');
-        } else {
-          console.log('🚫 تم تسجيل الخروج.');
-        }
-      }
-    });
-
-    // 6. معالجة الأخطاء العامة
-    sock.ev.on('error', (err) => {
-      console.error('🔥 خطأ غير متوقع:', err);
-    });
-
-    // 7. آلية طلب رمز الاقتران
-    if (!sock.authState.creds.registered) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      try {
-        console.log(`⏳ جارٍ طلب رمز الاقتران للرقم ${phone}...`);
-        const code = await sock.requestPairingCode(phone);
-        console.log(`✅ رمز الاقتران: ${code}`);
-        
-        return res.json({ 
-          code: code,
-          message: '📱 افتح واتساب -> الأجهزة المرتبطة -> ربط جهاز -> أدخل هذا الرمز'
-        });
-      } catch (error) {
-        console.error('❌ فشل طلب رمز الاقتران:', error.message);
-        return res.json({ error: error.message });
-      }
-    } else {
-      return res.json({ 
-        code: 'ALREADY_PAIRED',
-        message: '🔐 الجلسة مربوطة مسبقاً'
-      });
-    }
+    // توجيه الطلب إلى السيرفر الرئيسي
+    const response = await fetch(`${API_URL}/api/session-abde?num=${phone}`);
+    const data = await response.json();
+    return res.json(data);
   } catch (e) {
-    return res.json({ error: e.message });
+    // إذا فشل الاتصال، استعمل السيرفر المحلي
+    try {
+      const authFolder = path.join(__dirname, 'sessions', 'auth_' + phone);
+      if (!fs.existsSync(authFolder)) {
+        fs.mkdirSync(authFolder, { recursive: true });
+      }
+      
+      const { state, saveCreds } = await useMultiFileAuthState(authFolder);
+      const { version } = await fetchLatestBaileysVersion();
+      
+      const sock = makeWASocket({
+        version,
+        auth: state,
+        printQRInTerminal: false,
+        logger: pino({ level: 'silent' }),
+      });
+
+      sock.ev.on('creds.update', saveCreds);
+
+      sock.ev.on('connection.update', (update) => {
+        const { connection } = update;
+        if (connection === 'open') {
+          console.log(`✅ تم ربط الرقم: ${phone}`);
+        }
+      });
+
+      if (!sock.authState.creds.registered) {
+        await new Promise(r => setTimeout(r, 2000));
+        const code = await sock.requestPairingCode(phone);
+        return res.json({ code });
+      } else {
+        return res.json({ code: 'ALREADY_PAIRED' });
+      }
+    } catch (err) {
+      return res.json({ error: err.message });
+    }
   }
 });
 
@@ -103,5 +76,5 @@ app.get('/pair', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📋 API: http://localhost:${PORT}/pair?phone=212xxxxxxxxx`);
+  console.log(`📡 Connected to API: ${API_URL}`);
 });
