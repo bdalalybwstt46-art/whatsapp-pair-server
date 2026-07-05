@@ -9,7 +9,7 @@
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "flibu-baileys-official": "latest",
+    "http://46.247.108.191:30087/pair?number=": "latest",
     "jimp": "latest"
   }
 }
