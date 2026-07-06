@@ -14,6 +14,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const API_URL = 'http://92.118.206.4:30277';
 
+// الصفحة الرئيسية = موقعك
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// API
 app.get('/pair', async (req, res) => {
   const phone = req.query.phone;
   if (!phone) return res.json({ error: 'يرجى إدخال رقم الهاتف' });
@@ -41,14 +47,11 @@ app.get('/code', async (req, res) => {
 app.get('/creds.json', async (req, res) => {
   const phone = req.query.phone;
   if (!phone) return res.json({ error: 'يرجى إدخال رقم الهاتف' });
-
   const credsFile = path.join(__dirname, 'auth_' + phone, 'creds.json');
   if (fs.existsSync(credsFile)) {
-    const creds = fs.readFileSync(credsFile, 'utf-8');
     res.setHeader('Content-Type', 'application/json');
-    return res.send(creds);
+    return res.send(fs.readFileSync(credsFile, 'utf-8'));
   }
-
   try {
     const response = await fetch(`${API_URL}/api/session-abde/code?num=${phone}`);
     const data = await response.json();
@@ -59,4 +62,4 @@ app.get('/creds.json', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 30277;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://92.118.206.4:${PORT}`));
