@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
+import pkg from 'flibu-baileys-official';
+const { makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion } = pkg;
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import pkg from 'flibu-baileys-official';
-const { makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion } = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,5 +57,5 @@ app.get('/code', (req, res) => {
   return res.json({ error: 'الجلسة غير موجودة' });
 });
 
-const PORT = process.env.PORT || 30277;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 30222;
+app.listen(PORT, () => console.log(`Server running on http://176.100.37.77:${PORT}`));
