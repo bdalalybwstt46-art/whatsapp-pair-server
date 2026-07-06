@@ -16,12 +16,28 @@ app.get('/', (req, res) => {
 app.get('/pair', async (req, res) => {
   const phone = req.query.phone;
   if (!phone) return res.json({ error: 'يرجى إدخال رقم الهاتف' });
+  
+  // نحاول API الخارجي أولاً
   try {
     const response = await fetch(`${API_URL}/api/session-abde?num=${phone}`);
     const data = await response.json();
-    return res.json(data);
+    if (data.code) return res.json(data);
+  } catch (e) {}
+
+  // إذا فشل، نستعمل flibu-baileys-official
+  try {
+    const { state, saveCreds } = await useMultiFileAuthState('auth_' + phone);
+    const { version } = await fetchLatestBaileysVersion();
+    const sock = makeWASocket({ version, auth: state, printQRInTerminal: false });
+    sock.ev.on('creds.update', saveCreds);
+    if (!sock.authState.creds.registered) {
+      await new Promise(r => setTimeout(r, 2000));
+      const code = await sock.requestPairingCode(phone);
+      return res.json({ code });
+    }
+    return res.json({ code: 'ALREADY_PAIRED' });
   } catch (e) {
-    return res.json({ error: 'تعذر الاتصال بالسيرفر' });
+    return res.json({ error: e.message });
   }
 });
 
