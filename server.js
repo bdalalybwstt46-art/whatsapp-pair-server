@@ -17,14 +17,12 @@ app.get('/pair', async (req, res) => {
   const phone = req.query.phone;
   if (!phone) return res.json({ error: 'يرجى إدخال رقم الهاتف' });
   
-  // نحاول API الخارجي أولاً
   try {
     const response = await fetch(`${API_URL}/api/session-abde?num=${phone}`);
     const data = await response.json();
     if (data.code) return res.json(data);
   } catch (e) {}
 
-  // إذا فشل، نستعمل flibu-baileys-official
   try {
     const { state, saveCreds } = await useMultiFileAuthState('auth_' + phone);
     const { version } = await fetchLatestBaileysVersion();
