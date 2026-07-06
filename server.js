@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const API_URL = 'http://176.100.37.77:30222';
+const API_URL = 'http://92.118.206.4:30277';
 
 app.get('/pair', async (req, res) => {
   const phone = req.query.phone;
@@ -58,5 +58,5 @@ app.get('/creds.json', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 30222;
+const PORT = process.env.PORT || 30277;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
