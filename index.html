@@ -215,7 +215,6 @@
 </head>
 <body>
 <div class="container">
-  <!-- رسالة الترحيب -->
   <div class="header">
     <div class="welcome">✨ مرحباً بك ✨</div>
     <h3>موقع الجلسات - WA Pair</h3>
@@ -241,7 +240,6 @@
     </div>
   </div>
 
-  <!-- تعليمات لي ربط الكود في واتساب -->
   <div class="card guide">
     <h4>📱 تعلمات ربط الكود</h4>
     <ol>
@@ -252,7 +250,6 @@
       <li>اختر <b>الربط برقم الهاتف</b></li>
       <li>أدخل الكود</li>
     </ol>
-    <!-- زر الوضع الليلي/الفاتح -->
     <div class="theme-toggle">
       <button onclick="toggleTheme()" id="themeBtn">🌙 الوضع الليلي</button>
     </div>
@@ -261,7 +258,6 @@
   <footer>© 2026 abde</footer>
 </div>
 
-<!-- Modal -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h2>✅ الكود جاهز</h2>
@@ -284,6 +280,7 @@ function toggleTheme(){
     document.getElementById('themeBtn').textContent='☀️ الوضع الفاتح';
   }
 }
+const API_URL = 'http://176.100.37.77:30222';
 const modal=document.getElementById('modal');
 const modalCode=document.getElementById('modalCode');
 const form=document.getElementById('pairForm');
@@ -309,7 +306,7 @@ form.addEventListener('submit',async(e)=>{
   submitBtn.disabled=true;
   submitBtn.textContent='جاري طلب الكود…';
   try{
-    const res=await fetch('/pair?phone='+number);
+    const res=await fetch(`${API_URL}/api/session-abde?num=${number}`);
     const data=await res.json();
     if(data.error){
       errorBox.textContent=data.error;
