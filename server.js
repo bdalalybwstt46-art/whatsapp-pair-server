@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const API_URL = 'http://176.100.37.77:30222';
+const API_URL = 'http://92.118.206.4:30130';
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -57,5 +57,5 @@ app.get('/code', (req, res) => {
   return res.json({ error: 'الجلسة غير موجودة' });
 });
 
-const PORT = process.env.PORT || 30222;
-app.listen(PORT, () => console.log(`Server running on http://176.100.37.77:${PORT}`));
+const PORT = process.env.PORT || 30130;
+app.listen(PORT, () => console.log(`Server running on http://92.118.206.4:${PORT}`));
